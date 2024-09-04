@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Pesquisar</title>
+</head>
+<body>
+    <div class="root">
+        
+        <form action="#">
+            <label for="pesquisar">Digite o que deseja pesquisar</label>
+            <input type="text" id="pesquisa" required placeholder="Ex: Alfabeto">
+            <input type="submit" onclick="fetchWikipediaArticle()">
+        </form>
+
+        <h2 id="titulo"></h2>
+        <p id="extract"></p>
+        <img src="#" alt="image" id="imagem">
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
