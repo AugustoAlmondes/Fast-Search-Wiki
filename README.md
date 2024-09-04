@@ -1,6 +1,6 @@
-# Pesquisa_Rápida_Wiki
+# Fast_Search_Wiki
 
-**Pesquisa_Rápida_Wiki** é um site de pesquisa simples e eficiente que utiliza a API da Wikipedia para buscar e exibir informações rapidamente. Desenvolvido em HTML, CSS e JavaScript, este projeto permite que os usuários encontrem conteúdo relevante da Wikipedia diretamente na página.
+**Fast_Search_Wiki** é um site de pesquisa simples e eficiente que utiliza a API da Wikipedia para buscar e exibir informações rapidamente. Desenvolvido em HTML, CSS e JavaScript, este projeto permite que os usuários encontrem conteúdo relevante da Wikipedia diretamente na página.
 
 ## 🎯 Funcionalidades
 
@@ -20,13 +20,13 @@
 1. Clone o repositório:
 
     ```bash
-    git clone https://github.com/AugustoAlmondes/Pesquisa_Rápida_Wiki.git
+    git clone https://github.com/AugustoAlmondes/Fas.git
     ```
 
 2. Navegue até o diretório do projeto:
 
     ```bash
-    cd Pesquisa_Rápida_Wiki
+    cd Fas
     ```
 
 3. Abra o arquivo `index.html` no seu navegador preferido.
