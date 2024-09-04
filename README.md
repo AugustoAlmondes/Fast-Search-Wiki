@@ -20,7 +20,7 @@
 1. Clone o repositório:
 
     ```bash
-    git clone https://github.com/AugustoAlmondes/Fas.git
+    git clone https://github.com/AugustoAlmondes/Fast_Search_Wiki.git
     ```
 
 2. Navegue até o diretório do projeto:
