@@ -26,7 +26,7 @@
 2. Navegue até o diretório do projeto:
 
     ```bash
-    cd Fas
+    cd Fast_Search_Wiki
     ```
 
 3. Abra o arquivo `index.html` no seu navegador preferido.
