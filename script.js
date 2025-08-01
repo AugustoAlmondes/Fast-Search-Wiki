@@ -1,79 +1,118 @@
-let paragrafo = document.getElementById("extract");
-let titulo = document.getElementById("titulo");
-let imagem = document.getElementById("imagem");
-imagem.style.display = 'none';
-
-async function fetchWikipediaArticle() {
-
-    // ZERANDO OS CAMPOS PARA NOVAS PESQUISAS
-    console.log(imagem)
-    if (paragrafo) {
-        paragrafo.textContent = '';
-        titulo.textContent = '';
-        imagem.setAttribute('src', "#");
-        imagem.style.display = 'none';
-    }
-
-    var articleTitle = document.getElementById("pesquisa").value;
-
-    // CONECTANDO À API DA WIKIPEDIA
-    const url = `https://pt.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro&explaintext&titles=${articleTitle}&format=json&origin=*`;
-    console.log(url);
-
-    try {
-        const response = await fetch(url);
-
-        const data = await response.json();
-        const page = data.query.pages;
-        console.log(data);
-        const pageId = Object.keys(page)[0];
-
-        if (pageId === "-1") {
-            console.log("Artigo não encontrado.");
-            paragrafo.textContent = `Esse assunto não foi encontrado.
-                                Tente um novo assunto.`;
-            return;
+document.addEventListener('DOMContentLoaded', () => {
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('results');
+    const blurBg = document.querySelector('.blur-bg');
+    
+    // História de pesquisas
+    let searchHistory = JSON.parse(localStorage.getItem('wikiSearchHistory')) || [];
+    
+    searchForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const searchTerm = searchInput.value.trim();
+        
+        if (searchTerm) {
+            await fetchWikipediaArticle(searchTerm);
+            addToHistory(searchTerm);
         }
-
-        let title = page[pageId].title;
-        let imageUrl = page[pageId].thumbnail ? page[pageId].thumbnail.source : "none";
-        let extract = page[pageId].extract.split('\n')[0]
-
-        console.log("Titulo:", title);
-        console.log("Conteudo:", extract);
-        console.log(`URL da imagem: ${imageUrl}`);
-
-        // AQUI TIVE QUE VERIFICAR SE POSSUIA CONTEUDO (SOMENTE NO PRIMEIRO PARÁGRAFO) PRA 
-        // DEPOIS ADDICIONAR O SEGUNDO PARÁGRAFO, SE ESSE E O PRIMEIRO EXISTIREM.
-        // EM RESUMO, GAMBIARRA.
-
-        if (extract) {
-            console.log("entrou fdp");
+    });
+    
+    async function fetchWikipediaArticle(articleTitle) {
+        // Feedback visual durante o carregamento
+        resultsContainer.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Buscando "${articleTitle}" na Wikipedia...</p>
+            </div>
+        `;
+        
+        try {
+            const url = `https://pt.wikipedia.org/w/api.php?action=query&prop=extracts|pageimages&exintro&explaintext&titles=${encodeURIComponent(articleTitle)}&format=json&origin=*&pithumbsize=500`;
             
-            titulo.textContent = title;
-            extract = extract +  + '\n'
-            + page[pageId].extract.split('\n')[1];
-            paragrafo.textContent = extract;
+            const response = await fetch(url);
+            const data = await response.json();
+            const pages = data.query.pages;
+            const pageId = Object.keys(pages)[0];
+            
+            if (pageId === "-1") {
+                showError("Artigo não encontrado. Tente outro termo.");
+                resetBackground();
+                return;
+            }
+            
+            const page = pages[pageId];
+            displayResults(page);
+            
+            // Atualiza o background se houver imagem
+            if (page.thumbnail) {
+                updateBackground(page.thumbnail.source);
+            } else {
+                resetBackground();
+            }
+            
+        } catch (error) {
+            console.error("Erro ao buscar o artigo:", error);
+            showError("Ocorreu um erro na pesquisa. Tente novamente.");
+            resetBackground();
         }
-        else
-        {
-            paragrafo.textContent = `Esse assunto não foi encontrado.
-            Tente um novo assunto.`;
-        }
-
-
-        // ADICIONANDO IMAGEM DE FUNDO NO BODY E FILTROS, SE EXISTIR ALGUMA IMAGEM RELACIONADA.
-        if (imageUrl != "none") {
-            imagem.style.display = "block";
-            imageUrl = imageUrl.replace("50px", "500px");
-            imagem.setAttribute('src', imageUrl);
-
-            document.getElementsByTagName("body")[0].style.backgroundImage = `url(${imageUrl})`;
-            // document.getElementsByTagName("body")[0].style.backdropFilter = "";
-            document.getElementsByTagName("body")[0].style.backdropFilter = "brightness(50%) blur(50px)";
-        }
-
-    } catch (error) {
-        console.error("Erro ao buscar o artigo:", error);
     }
-}
+    
+    function displayResults(page) {
+        const extract = page.extract || "Não há conteúdo disponível para este artigo.";
+        const imageUrl = page.thumbnail ? page.thumbnail.source : null;
+        
+        let contentHtml = `
+            <div class="article-card">
+                <h2 class="article-title">${page.title}</h2>
+                <p class="article-content">${extract}</p>
+        `;
+        
+        if (imageUrl) {
+            contentHtml += `
+                <img src="${imageUrl}" alt="${page.title}" class="article-image" id="article-image">
+            `;
+        }
+        
+        contentHtml += `</div>`;
+        
+        resultsContainer.innerHTML = contentHtml;
+        
+        // Mostra a imagem após o carregamento
+        if (imageUrl) {
+            const imgElement = document.getElementById('article-image');
+            imgElement.style.display = 'block';
+        }
+    }
+    
+    function updateBackground(imageUrl) {
+        blurBg.style.backgroundImage = `url(${imageUrl})`;
+        blurBg.style.opacity = '1';
+    }
+    
+    function resetBackground() {
+        blurBg.style.opacity = '0';
+    }
+    
+    function showError(message) {
+        resultsContainer.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+    
+    function addToHistory(term) {
+        // Limita o histórico aos 5 últimos termos
+        searchHistory.unshift(term);
+        searchHistory = [...new Set(searchHistory)].slice(0, 5);
+        localStorage.setItem('wikiSearchHistory', JSON.stringify(searchHistory));
+    }
+    
+    // Sugere termos do histórico quando o input recebe foco
+    searchInput.addEventListener('focus', () => {
+        if (searchHistory.length > 0) {
+            // Implementar dropdown de sugestões aqui se desejar
+        }
+    });
+});

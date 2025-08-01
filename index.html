@@ -3,22 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiSearch | Pesquisa Inteligente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <title>Pesquisar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="root">
-        
-        <form action="#">
-            <label for="pesquisar">Digite o que deseja pesquisar</label>
-            <input type="text" id="pesquisa" required placeholder="Ex: Alfabeto">
-            <input type="submit" onclick="fetchWikipediaArticle()">
+    <div class="blur-bg"></div>
+    
+    <main class="search-container">
+        <div class="search-header">
+            <h1><i class="fab fa-wikipedia-w"></i> WikiSearch</h1>
+            <p class="subtitle">Encontre conhecimento em segundos</p>
+        </div>
+
+        <form id="search-form" class="search-form">
+            <div class="search-input-container">
+                <input type="text" id="search-input" required placeholder="Digite um termo para pesquisar...">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i> Pesquisar
+                </button>
+            </div>
         </form>
 
-        <h2 id="titulo"></h2>
-        <p id="extract"></p>
-        <img src="#" alt="image" id="imagem">
-    </div>
+        <div class="results-container" id="results">
+            <div class="welcome-message">
+                <i class="fas fa-lightbulb"></i>
+                <h2>Explore o conhecimento</h2>
+                <p>Digite qualquer termo acima para começar sua pesquisa na Wikipedia</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2023 WikiSearch | Desenvolvido com a Wikipedia API</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
-<script src="script.js"></script>
 </html>
